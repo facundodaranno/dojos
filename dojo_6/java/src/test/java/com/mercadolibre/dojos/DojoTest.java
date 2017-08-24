@@ -1,16 +1,9 @@
 package com.mercadolibre.dojos;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
-
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for the dojo.
@@ -22,49 +15,35 @@ public class DojoTest {
 	}
 	
 	@Test
-	@Ignore
-	public void test_dummy() {
+	public void steps_into_a_cell_which_is_empty_then_it_moves_in(){
+			Bomberman bomberman = new Bomberman();
+			Cell cell = new Cell();
+
+			bomberman.stepInto(cell);
+			assertEquals( bomberman.isIn(cell) , true );
+	}
+
+	@Test( expected = IllegalStateException.class )
+	public void steps_into_a_cell_which_is_busy_with_an_object_then_it_doesnt_move_and_throw_an_exception(){
+
+		Cell cell = new Cell( new Wall() );
+		Cell bornPlace = new Cell();
+		Bomberman bomberman = new Bomberman( bornPlace );
+
+		bomberman.stepInto(cell);
+
+		bomberman.stepInto(cell);
+		assertEquals( bomberman.isIn(bornPlace) , true );
 	}
 
 	@Test
-	public void testGetProfitFromCostAndSellingPrice_shouldReturn100(){
-		Item item = new Item( new Cost(100.00), new SellingPrice(200.00) );
-		assertEquals( item.getProfit(), (Double) 100.00 );
+	public void steps_into_a_cell_which_is_busy_with_an_enemy_then_he_dies(){
+		Cell cellWithBolban = new Cell( new Bolban() );
+		Bomberman bomberman = new Bomberman();
+
+		bomberman.stepInto( cellWithBolban );
+
+		assertEquals( bomberman.idDead(), true );
+
 	}
-
-	@Test
-	public void testGetProfitFromASelling_shouldReturnX(){
-		Item item = new Item( new Cost(100.00), new SellingPrice(200.00) );
-		ArrayList<Item> itemList = new ArrayList<Item>();
-		itemList.add( item );
-		itemList.add( item );
-		Selling selling = new  Selling( itemList );
-
-
-
-		assertEquals( selling.calculateProfit(), new Profit(50) );
-	}
-
-	/*
-
-	describe("checkout", () => {
-    describe("dummy", function () {
-        it("dummy", () => {
-            var item = new Item(new Cost(100));
-            var selling = new Selling([item] , new SellingPrice(150))
-            chai.assert.isTrue(selling.calculateProfit().equals(new Profit(50)));
-        });
-    });
-
-    describe("buy one and sell two", function () {
-        it("buy one and sell two", () => {
-            var item = new Item(new Cost(100));
-            var selling = new Selling([item,item],  new SellingPrice(250));
-
-            chai.assert.isTrue(selling.calculateProfit().equals(new Profit(50)));
-        });
-    });
-
-
-	*/
 }
